@@ -1,0 +1,29 @@
+<div class="add-button-div">
+  <button class="btn btn-secondary" (click)="isAddNote=true">Add Note</button> &nbsp;&nbsp;&nbsp;
+  <button *ngIf="!isAddNote" class="btn btn-secondary" (click)="isViewMode=false">View Notes List</button>
+</div>
+<div class="content" role="main" *ngIf="!isViewMode">
+  <div *ngIf="!isAddNote">
+    <div *ngFor="let note of loggedInUserDetail.notes">
+      <app-note-list [note]="note" (noteDelete)="noteDelete($event)" (saveNote)="saveNote($event)" (viewNote)="viewNote($event)"></app-note-list>
+    </div>
+
+    <div *ngIf="!loggedInUserDetail.notes">
+      No notes found.
+    </div>
+  </div>
+
+  <div *ngIf="isAddNote" class="card-container">
+    <div class="card card-small" tabindex="0">
+      <h3><input #heading type="text" placeholder="Title"></h3>
+      <p>Description<br>
+        <textarea #desc id="desc" name="desc" rows="4" cols="50"></textarea>
+      </p>
+    </div>
+    <button class="add-button" (click)=addNote(heading.value,desc.value)>Save</button>
+  </div>
+</div>
+<div class="view-note-div" *ngIf="isViewMode">
+  <h2>{{selectedNote.title}}</h2>
+  <p>{{selectedNote.description}}</p>
+</div>
