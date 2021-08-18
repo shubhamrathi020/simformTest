@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Note, USER } from '../util';
 
 @Component({
@@ -11,32 +12,44 @@ export class MyNotesComponent implements OnInit {
   loggedInUserDetail: any;
   usersObj: any;
   isAddNote: boolean = false;
-  isViewMode:boolean=false;
-  selectedNote:any;
-  constructor() { }
+  isViewMode: boolean = false;
+  selectedNote: any;
+  emptyHeaderSave: boolean = false;
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     let loggedInUser = window.localStorage.getItem('userLoggedIn');
-    let users = window.localStorage.getItem('users');
-    this.usersObj = users !== null ? JSON.parse(users) : {};
-    this.loggedInUserDetail = this.usersObj.find((user: USER) => user.userName == loggedInUser)
+    if (!loggedInUser) {
+      this.router.navigate(['login']);
+    }
+    else {
+      let users = window.localStorage.getItem('users');
+      this.usersObj = users !== null ? JSON.parse(users) : {};
+      this.loggedInUserDetail = this.usersObj.find((user: USER) => user.userName == loggedInUser)
+    }
   }
 
   addNote(heading: string, desc: string) {
-    // console.log(heading, desc)
-    let id:number = this.loggedInUserDetail.notes.length;
-    this.isAddNote = false;
-    let newNote:Note = {
-      id:id,
-      title:heading,
-      description:desc
+    if (heading == "") {
+      this.emptyHeaderSave = true;
     }
-    this.usersObj.forEach((user: USER) => {
-      if (user.userName === this.loggedInUserDetail.userName) {
-        user.notes?.push(newNote)
+    else {
+      this.emptyHeaderSave = false;
+      let length = this.loggedInUserDetail.notes ? this.loggedInUserDetail.notes.length : 0;
+      let id: number = length != 0 ? this.loggedInUserDetail.notes[length - 1].id : 0;
+      this.isAddNote = false;
+      let newNote: Note = {
+        id: id + 1,
+        title: heading,
+        description: desc
       }
-    });
-    window.localStorage.setItem('users', JSON.stringify(this.usersObj))
+      this.usersObj.forEach((user: USER) => {
+        if (user.userName === this.loggedInUserDetail.userName) {
+          user['notes'].push(newNote)
+        }
+      });
+      window.localStorage.setItem('users', JSON.stringify(this.usersObj))
+    }
 
   }
 
@@ -66,8 +79,7 @@ export class MyNotesComponent implements OnInit {
     window.localStorage.setItem('users', JSON.stringify(this.usersObj))
   }
 
-  viewNote(note:Note){
-    console.log(note)
+  viewNote(note: Note) {
     this.isViewMode = true;
     this.selectedNote = note
   }

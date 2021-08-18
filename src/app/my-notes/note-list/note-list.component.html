@@ -4,7 +4,7 @@
         <p>{{note.description}}</p>
     </div>
     <button class="x-button" (click)="deleteNote(note.id)">X</button>
-    <button class="edit-button" (click)="isEditable=true"><img src="edit.svg" width="15"></button>
+    <button class="edit-button" (click)="isEditable=true">Edit</button>
     <button class="view-button" (click)="viewselectedNote()">View</button>
 </div>
 
@@ -12,8 +12,10 @@
     <div class="card card-small" tabindex="0">
         <h3><input #heading type="text" placeholder="Title" value="{{note.title}}"></h3>
         <p>Description<br>
-            <textarea #desc id="desc" name="desc" placeholder="Description" value="{{note.description}}" rows="4" cols="50"></textarea>
+            <textarea #desc id="desc" name="desc" placeholder="Description" value="{{note.description}}" rows="4"
+                cols="50"></textarea>
         </p>
+        <p *ngIf="emptyHeaderSave" class="error">Please provide Title.</p>
     </div>
     <button class="save-button" (click)=saveEditedNote(heading.value,desc.value)>Save</button>
 </div>

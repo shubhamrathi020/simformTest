@@ -1,15 +1,12 @@
 <div class="add-button-div">
   <button class="btn btn-secondary" (click)="isAddNote=true">Add Note</button> &nbsp;&nbsp;&nbsp;
-  <button *ngIf="!isAddNote" class="btn btn-secondary" (click)="isViewMode=false">View Notes List</button>
+  <button class="btn btn-secondary" (click)="isViewMode=false;isAddNote=false">View Notes List</button>
 </div>
-<div class="content" role="main" *ngIf="!isViewMode">
+<div class="content" role="main" *ngIf="!isViewMode && loggedInUserDetail">
   <div *ngIf="!isAddNote">
     <div *ngFor="let note of loggedInUserDetail.notes">
-      <app-note-list [note]="note" (noteDelete)="noteDelete($event)" (saveNote)="saveNote($event)" (viewNote)="viewNote($event)"></app-note-list>
-    </div>
-
-    <div *ngIf="!loggedInUserDetail.notes">
-      No notes found.
+      <app-note-list [note]="note" (noteDelete)="noteDelete($event)" (saveNote)="saveNote($event)"
+        (viewNote)="viewNote($event)"></app-note-list>
     </div>
   </div>
 
@@ -19,10 +16,17 @@
       <p>Description<br>
         <textarea #desc id="desc" name="desc" rows="4" cols="50"></textarea>
       </p>
+      <p *ngIf="emptyHeaderSave" class="error">Please provide Title.</p>
     </div>
     <button class="add-button" (click)=addNote(heading.value,desc.value)>Save</button>
+
   </div>
 </div>
+
+<div class="empty-notes-div" *ngIf="loggedInUserDetail && loggedInUserDetail.notes.length==0">
+  No notes found.
+</div>
+
 <div class="view-note-div" *ngIf="isViewMode">
   <h2>{{selectedNote.title}}</h2>
   <p>{{selectedNote.description}}</p>

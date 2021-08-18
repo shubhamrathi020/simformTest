@@ -6,7 +6,7 @@ export interface USER {
     address?: string;
     userName: string;
     password: string;
-    notes?: Note[]
+    notes: Note[]
 }
 
 export interface Note {

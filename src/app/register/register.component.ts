@@ -11,6 +11,7 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   registered: boolean = false;
+  userExist:boolean=false;
 
   constructor(private fb: FormBuilder) {
     this.registerForm = this.fb.group({
@@ -20,7 +21,8 @@ export class RegisterComponent implements OnInit {
       contact: ['', Validators.pattern('[1-9]{1}[0-9]{9}')],
       address: [''],
       userName: ['', [Validators.required, Validators.minLength(5)]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      notes:[[]]
     })
   }
 
@@ -28,8 +30,6 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    console.log(this.registerForm)
-    // this.registered=true
     let users = window.localStorage.getItem('users');
     let usersObj = users !== null ? JSON.parse(users) : {};
     let loggingUsername = this.registerForm.controls.userName.value;
@@ -37,15 +37,15 @@ export class RegisterComponent implements OnInit {
       return (user.userName == loggingUsername)
     })
     if (userExist) {
-      this.registered = false
-      console.log('Username already exist. Kindly enter different username.');
+      this.registered = false;
+      this.userExist = true;
     }
     else {
-      this.registered = true
+      this.registered = true;
+      this.userExist = false;
       usersObj.push(this.registerForm.value);
-      // console.log(usersObj)
       window.localStorage.setItem('users', JSON.stringify(usersObj))
-      console.log('Successfully registered. Please login.')
+      this.registerForm.reset();
     }
   }
 

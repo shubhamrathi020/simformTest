@@ -11,7 +11,7 @@ import { USER } from '../util';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  loginError:boolean=false;
+  loginError: boolean = false;
   constructor(private fb: FormBuilder, private router: Router) {
     this.loginForm = this.fb.group({
       userName: ['', [Validators.required, Validators.minLength(5)]],
@@ -25,20 +25,18 @@ export class LoginComponent implements OnInit {
   login() {
     let users = window.localStorage.getItem('users');
     let usersObj = users !== null ? JSON.parse(users) : {};
-    // console.log(usersObj)
     let loggingUsername = this.loginForm.controls.userName.value;
     let loggingpassword = this.loginForm.controls.password.value;
     let userExist: USER[] = usersObj.find((user: USER) => {
       return (user.userName == loggingUsername && user.password == loggingpassword)
     })
     if (userExist) {
-      this.loginError=false;
+      this.loginError = false;
       window.localStorage.setItem('userLoggedIn', loggingUsername)
       this.router.navigate(['myNotes'])
     }
     else {
-      this.loginError=true;
-      console.log('User does not exist.');
+      this.loginError = true;
     }
   }
 
